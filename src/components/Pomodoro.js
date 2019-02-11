@@ -1,17 +1,22 @@
 import React, { Component } from 'react';
 import { logoWebBranca } from '../components/Logo';
-const Logo = () => <img className="icon icons8-Tomato" src={logoWebBranca}  />;
+const Logo = () => <img className="icon icons8-Tomato" src={logoWebBranca} />;
 
 class Pomodoro extends React.Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
-			breakTime: 600,
-			workTime: 3000,
-			seconds: 3000,
+			breakTime: 5,
+			workTime: 10,
+			cafe: 60,
+			almoco: 50,
+			seconds: 10,
 			timerId: false,
-			active: 'workTime'
+			pomodoro: 1,
+			active: 'workTime',
+			almocoTime: { start: '12:00', end: '13:00' },
+			cafeTime: { start: '11:00', end: '11:25' }
 		};
 
 		this.playStop = this.playStop.bind(this);
@@ -23,8 +28,13 @@ class Pomodoro extends React.Component {
 		this.setState(function(prevState, props) {
 			const currentState = Object.assign(prevState);
 			const stillActive = prevState.seconds - 1 > 0;
-			const nextTimer = prevState.active === 'workTime' ? 'breakTime' : 'workTime';
-
+			let nextTimer = 'workTime';
+			let timeAtual = new Date(new Date().getTime()).toLocaleTimeString('pt-BR');
+			if (timeAtual > currentState.cafeTime.start && timeAtual < currentState.cafeTime.end) {
+				nextTimer = 'cafe';
+			} else {
+				nextTimer = prevState.active === 'workTime' ? 'breakTime' : 'workTime';
+			}
 			currentState.seconds = stillActive ? currentState.seconds - 1 : currentState[nextTimer];
 			currentState.active = stillActive ? currentState.active : nextTimer;
 			if (this.timerID) {
@@ -76,33 +86,33 @@ class Pomodoro extends React.Component {
 	}
 }
 
-class Option extends React.Component {
-	onChange(e) {
-		e.preventDefault();
-		this.props.updateLength(this.props.timer, e);
-	}
+// class Option extends React.Component {
+// 	onChange(e) {
+// 		e.preventDefault();
+// 		this.props.updateLength(this.props.timer, e);
+// 	}
 
-	convertToMinutes(seconds) {
-		return Math.floor(seconds / 60);
-	}
+// 	convertToMinutes(seconds) {
+// 		return Math.floor(seconds / 60);
+// 	}
 
-	render() {
-		return (
-			<label className="input-group">
-				{this.props.children}
-				<input
-					className="input-group__input"
-					type="number"
-					min="1"
-					step="1"
-					placeholder="Insert minutes"
-					onChange={this.onChange.bind(this)}
-					value={this.convertToMinutes(this.props.value)}
-				/>
-			</label>
-		);
-	}
-}
+// 	render() {
+// 		return (
+// 			<label className="input-group">
+// 				{this.props.children}
+// 				<input
+// 					className="input-group__input"
+// 					type="number"
+// 					min="1"
+// 					step="1"
+// 					placeholder="Insert minutes"
+// 					onChange={this.onChange.bind(this)}
+// 					value={this.convertToMinutes(this.props.value)}
+// 				/>
+// 			</label>
+// 		);
+// 	}
+// }
 
 const Button = (props) => (
 	<button className="btn" onClick={props.action}>
@@ -124,7 +134,7 @@ class Time extends React.Component {
 
 	render() {
 		var remainingTime = this.convertToHhMmSs(this.props.seconds);
-		var activeTimer = this.props.active === 'workTime' ? "Hora Pomodoro!" : 'Hora do Break!';
+		var activeTimer = this.props.active === 'workTime' ? 'Hora Pomodoro!' : 'Hora do Break!';
 
 		return (
 			<div className="timer">
