@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { logoWebBranca } from '../components/Logo';
+import { logoWebBranca } from 'components/Logo';
+import Time from 'components/Time';
 const Logo = () => <img className="icon icons8-Tomato" src={logoWebBranca} />;
 
 class Pomodoro extends React.Component {
@@ -7,16 +8,17 @@ class Pomodoro extends React.Component {
 		super(props);
 
 		this.state = {
-			breakTime: 5,
-			workTime: 10,
-			cafe: 60,
-			almoco: 50,
-			seconds: 10,
+			break: 600,
+			workTime: 3000,
+			cafe: 1200,
+			almoco: 3600,
+			seconds: 0,
 			timerId: false,
 			pomodoro: 1,
 			active: 'workTime',
 			almocoTime: { start: '12:00', end: '13:00' },
-			cafeTime: { start: '11:00', end: '11:25' }
+			cafeTime: [ { start: '18:00', end: '19:00' } ],
+			breakTime: [ { start: '19:20', end: '19:25' } ]
 		};
 
 		this.playStop = this.playStop.bind(this);
@@ -29,21 +31,60 @@ class Pomodoro extends React.Component {
 			const currentState = Object.assign(prevState);
 			const stillActive = prevState.seconds - 1 > 0;
 			let nextTimer = 'workTime';
-			let timeAtual = new Date(new Date().getTime()).toLocaleTimeString('pt-BR');
-			if (timeAtual > currentState.cafeTime.start && timeAtual < currentState.cafeTime.end) {
+			if (this.verificarCafe()) {
 				nextTimer = 'cafe';
+			} else if (this.verificarAlmoco()) {
+				nextTimer = 'almoco';
+			} else if (this.verificarBreak()) {
+				nextTimer = 'break';
 			} else {
-				nextTimer = prevState.active === 'workTime' ? 'breakTime' : 'workTime';
+				nextTimer = 'workTime';
 			}
 			currentState.seconds = stillActive ? currentState.seconds - 1 : currentState[nextTimer];
 			currentState.active = stillActive ? currentState.active : nextTimer;
+
 			if (this.timerID) {
 				currentState.timerId = this.timerID;
 			}
 			return currentState;
 		});
 	}
-
+	verificarAlmoco = () => {
+		const { almocoTime } = this.state;
+		let timeAtual = new Date(new Date().getTime()).toLocaleTimeString('pt-BR');
+		if (timeAtual >= almocoTime.start && timeAtual <= almocoTime.end) {
+			return true;
+		}
+		return false;
+	};
+	verificarCafe = () => {
+		const { cafeTime } = this.state;
+		let item = {};
+		let timeAtual = new Date(new Date().getTime()).toLocaleTimeString('pt-BR');
+		let resposta = false;
+		for (let i = 0; i < cafeTime.length; i++) {
+			item = cafeTime[i];
+			if (timeAtual >= item.start && timeAtual <= item.end) {
+				resposta = true;
+				break;
+			}
+		}
+		return resposta;
+	};
+	verificarBreak = () => {
+		const { breakTime } = this.state;
+		let item = {};
+		let timeAtual = new Date(new Date().getTime()).toLocaleTimeString('pt-BR');
+		let resposta = false;
+		for (let i = 0; i < breakTime.length; i++) {
+			item = breakTime[i];
+			if (timeAtual >= item.start && timeAtual <= item.end) {
+				resposta = true;
+				break;
+			}
+		}
+		return resposta;
+	};
 	//
 	playStop() {
 		if (this.state.timerId) {
@@ -56,6 +97,10 @@ class Pomodoro extends React.Component {
 		}
 
 		this.timerID = setInterval(() => this.updateTime(), 1000);
+	}
+	componentDidMount() {
+		this.updateTime();
+		this.playStop();
 	}
 	//
 	updateLength(timer, e) {
@@ -120,29 +165,6 @@ const Button = (props) => (
 	</button>
 );
 
-class Time extends React.Component {
-	twoDigits(num) {
-		return num > 9 ? '' + num : '0' + num;
-	}
 
-	convertToHhMmSs(seconds) {
-		const h = this.twoDigits(Math.floor(seconds / 3600));
-		const m = this.twoDigits(Math.floor((seconds % 3600) / 60));
-		const s = this.twoDigits(Math.floor((seconds % 3600) % 60));
-		return `${h}:${m}:${s}`;
-	}
-
-	render() {
-		var remainingTime = this.convertToHhMmSs(this.props.seconds);
-		var activeTimer = this.props.active === 'workTime' ? 'Hora Pomodoro!' : 'Hora do Break!';
-
-		return (
-			<div className="timer">
-				<p className="timer__description">{activeTimer}</p>
-				<p className="timer__time">{remainingTime}</p>
-			</div>
-		);
-	}
-}
 
 export default Pomodoro;
