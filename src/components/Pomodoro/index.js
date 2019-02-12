@@ -1,6 +1,7 @@
 import React from 'react';
 import { logoWebBranca } from 'components/Logo';
 import Time from 'components/Time';
+import Som from 'components/Som';
 import moment from 'moment';
 window.moment = moment;
 
@@ -20,9 +21,13 @@ class Pomodoro extends React.Component {
 			pomodoro: 1,
 			active: 'workTime',
 			agenda: [
+				{ start: '08:00', end: '08:50', tipo: 'workTime' },
+				{ start: '08:50', end: '09:10', tipo: 'cafe' },
+				{ start: '09:10', end: '10:00', tipo: 'workTime' },
+				{ start: '10:00', end: '10:10', tipo: 'break' },
 				{ start: '10:10', end: '11:00', tipo: 'workTime' },
-			
-				{ start: '11:10', end: '12:00', tipo: 'workTime' },
+				{ start: '11:00', end: '11:10', tipo: 'break' },
+				{ start: '11:10', end: '11:59', tipo: 'workTime' },
 				{ start: '12:00', end: '13:00', tipo: 'almoco' },
 				{ start: '18:00', end: '19:00', tipo: 'cafe' }
 			]
@@ -41,7 +46,7 @@ class Pomodoro extends React.Component {
 
 	checkStartTime = (dados) => {
 		let start = moment.utc(moment().format('HH:mm:ss'), 'HH:mm:ss');
-		let end = moment.utc(dados.end,'HH:mm:ss');
+		let end = moment.utc(dados.end, 'HH:mm:ss');
 		// evita erro de ser meia noite ou a end time ser maior
 		if (end.isBefore(start)) {
 			end.add(1, 'day');
@@ -64,7 +69,7 @@ class Pomodoro extends React.Component {
 				nextTimer = 'workTime';
 				time = currentState[nextTimer];
 			}
-			currentState.seconds = time; 
+			currentState.seconds = time;
 			currentState.active = nextTimer;
 
 			if (this.timerID) {
@@ -92,9 +97,9 @@ class Pomodoro extends React.Component {
 	playStop() {
 		if (this.state.timerId) {
 			clearInterval(this.state.timerId);
-			this.updateTime()
+			this.updateTime();
 			return this.setState({
-				timerId: false,
+				timerId: false
 			});
 		}
 
@@ -112,6 +117,20 @@ class Pomodoro extends React.Component {
 		state.seconds = timer === 'workTime' ? e.target.value * 60 : state.seconds;
 		this.setState(state);
 	}
+	playSom = ({ tipo }) => {
+		let som;
+		switch (tipo) {
+			case 'break':
+				som = somBreak;
+				break;
+			case 'fimBreak':
+				som = somFimBreak;
+		}
+		let audio = new Audio(som);
+		this.setState({ audio });
+		this.state.audio.play();
+		setTimeout(this.pausar(), 300);
+	};
 	render() {
 		const buttonString = this.state.timerId ? 'Pausar' : 'Começar';
 		return (
@@ -119,6 +138,7 @@ class Pomodoro extends React.Component {
 				<Logo />
 				<Time active={this.state.active} seconds={this.state.seconds} />
 				<Button action={this.playStop}>{buttonString}</Button>
+				
 				{/* <Option value={this.state.workTime} timer="workTime" updateLength={this.updateLength.bind(this)}>
 					Minutes of work
 				</Option>
