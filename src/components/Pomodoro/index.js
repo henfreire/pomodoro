@@ -1,6 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { logoWebBranca } from 'components/Logo';
 import Time from 'components/Time';
+import moment from 'moment';
+window.moment = moment;
+
 const Logo = () => <img className="icon icons8-Tomato" src={logoWebBranca} />;
 
 class Pomodoro extends React.Component {
@@ -12,36 +15,57 @@ class Pomodoro extends React.Component {
 			workTime: 3000,
 			cafe: 1200,
 			almoco: 3600,
-			seconds: 0,
+			seconds: 3000,
 			timerId: false,
 			pomodoro: 1,
 			active: 'workTime',
-			almocoTime: { start: '12:00', end: '13:00' },
-			cafeTime: [ { start: '18:00', end: '19:00' } ],
-			breakTime: [ { start: '19:20', end: '19:25' } ]
+			agenda: [
+				{ start: '10:10', end: '11:00', tipo: 'workTime' },
+			
+				{ start: '11:10', end: '12:00', tipo: 'workTime' },
+				{ start: '12:00', end: '13:00', tipo: 'almoco' },
+				{ start: '18:00', end: '19:00', tipo: 'cafe' }
+			]
 		};
 
 		this.playStop = this.playStop.bind(this);
 		this.updateTime = this.updateTime.bind(this);
 	}
+	UNSAFE_componentWillMount() {
+		this.iniciar();
+	}
+	iniciar = () => {
+		this.updateTime();
+		this.playStop();
+	};
 
+	checkStartTime = (dados) => {
+		let start = moment.utc(moment().format('HH:mm:ss'), 'HH:mm:ss');
+		let end = moment.utc(dados.end,'HH:mm:ss');
+		// evita erro de ser meia noite ou a end time ser maior
+		if (end.isBefore(start)) {
+			end.add(1, 'day');
+		}
+		let time = end.diff(start);
+		return time * 0.001;
+	};
 	//
 	updateTime() {
 		this.setState(function(prevState, props) {
 			const currentState = Object.assign(prevState);
 			const stillActive = prevState.seconds - 1 > 0;
 			let nextTimer = 'workTime';
-			if (this.verificarCafe()) {
-				nextTimer = 'cafe';
-			} else if (this.verificarAlmoco()) {
-				nextTimer = 'almoco';
-			} else if (this.verificarBreak()) {
-				nextTimer = 'break';
+			let time = currentState.seconds;
+			let res = this.verificarAgenda();
+			if (res.status) {
+				nextTimer = res.tipo;
+				time = this.checkStartTime(res);
 			} else {
 				nextTimer = 'workTime';
+				time = currentState[nextTimer];
 			}
-			currentState.seconds = stillActive ? currentState.seconds - 1 : currentState[nextTimer];
-			currentState.active = stillActive ? currentState.active : nextTimer;
+			currentState.seconds = time; 
+			currentState.active = nextTimer;
 
 			if (this.timerID) {
 				currentState.timerId = this.timerID;
@@ -49,37 +73,16 @@ class Pomodoro extends React.Component {
 			return currentState;
 		});
 	}
-	verificarAlmoco = () => {
-		const { almocoTime } = this.state;
-		let timeAtual = new Date(new Date().getTime()).toLocaleTimeString('pt-BR');
-		if (timeAtual >= almocoTime.start && timeAtual <= almocoTime.end) {
-			return true;
-		}
-		return false;
-	};
-	verificarCafe = () => {
-		const { cafeTime } = this.state;
+
+	verificarAgenda = () => {
+		const { agenda } = this.state;
 		let item = {};
 		let timeAtual = new Date(new Date().getTime()).toLocaleTimeString('pt-BR');
-		let resposta = false;
-		for (let i = 0; i < cafeTime.length; i++) {
-			item = cafeTime[i];
+		let resposta = { status: false };
+		for (let i = 0; i < agenda.length; i++) {
+			item = agenda[i];
 			if (timeAtual >= item.start && timeAtual <= item.end) {
-				resposta = true;
-				break;
-			}
-		}
-		return resposta;
-	};
-	verificarBreak = () => {
-		const { breakTime } = this.state;
-		let item = {};
-		let timeAtual = new Date(new Date().getTime()).toLocaleTimeString('pt-BR');
-		let resposta = false;
-		for (let i = 0; i < breakTime.length; i++) {
-			item = breakTime[i];
-			if (timeAtual >= item.start && timeAtual <= item.end) {
-				resposta = true;
+				resposta = { ...item, status: true };
 				break;
 			}
 		}
@@ -89,19 +92,15 @@ class Pomodoro extends React.Component {
 	playStop() {
 		if (this.state.timerId) {
 			clearInterval(this.state.timerId);
+			this.updateTime()
 			return this.setState({
-				seconds: this.state.workTime,
 				timerId: false,
-				active: 'workTime'
 			});
 		}
 
 		this.timerID = setInterval(() => this.updateTime(), 1000);
 	}
-	componentDidMount() {
-		this.updateTime();
-		this.playStop();
-	}
+
 	//
 	updateLength(timer, e) {
 		if (this.state.timerId) {
@@ -164,7 +163,5 @@ const Button = (props) => (
 		{props.children}
 	</button>
 );
-
-
 
 export default Pomodoro;
