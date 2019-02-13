@@ -1,6 +1,7 @@
 import React from 'react';
 import { logoWebBranca } from 'components/Logo';
 import Time from 'components/Time';
+import { playSom } from 'components/Som/Audio';
 import Som from 'components/Som';
 import moment from 'moment';
 window.moment = moment;
@@ -20,6 +21,7 @@ class Pomodoro extends React.Component {
 			timerId: false,
 			pomodoro: 1,
 			active: 'workTime',
+			playSom: false,
 			agenda: [
 				{ start: '08:00', end: '08:50', tipo: 'workTime' },
 				{ start: '08:50', end: '09:10', tipo: 'cafe' },
@@ -29,7 +31,8 @@ class Pomodoro extends React.Component {
 				{ start: '11:00', end: '11:10', tipo: 'break' },
 				{ start: '11:10', end: '11:59', tipo: 'workTime' },
 				{ start: '12:00', end: '13:00', tipo: 'almoco' },
-				{ start: '18:00', end: '19:00', tipo: 'cafe' }
+				{ start: '18:00', end: '19:00', tipo: 'cafe' },
+				{ start: '23:13', end: '23:30', tipo: 'cafe' }
 			]
 		};
 
@@ -39,6 +42,7 @@ class Pomodoro extends React.Component {
 	UNSAFE_componentWillMount() {
 		this.iniciar();
 	}
+
 	iniciar = () => {
 		this.updateTime();
 		this.playStop();
@@ -67,7 +71,10 @@ class Pomodoro extends React.Component {
 				time = this.checkStartTime(res);
 			} else {
 				nextTimer = 'workTime';
-				time = currentState[nextTimer];
+				time = currentState.seconds - 1;
+			}
+			if (currentState.active != res.tipo) {
+				playSom({ tipo: res.tipo });
 			}
 			currentState.seconds = time;
 			currentState.active = nextTimer;
@@ -117,28 +124,16 @@ class Pomodoro extends React.Component {
 		state.seconds = timer === 'workTime' ? e.target.value * 60 : state.seconds;
 		this.setState(state);
 	}
-	playSom = ({ tipo }) => {
-		let som;
-		switch (tipo) {
-			case 'break':
-				som = somBreak;
-				break;
-			case 'fimBreak':
-				som = somFimBreak;
-		}
-		let audio = new Audio(som);
-		this.setState({ audio });
-		this.state.audio.play();
-		setTimeout(this.pausar(), 300);
-	};
+
 	render() {
 		const buttonString = this.state.timerId ? 'Pausar' : 'Começar';
+		const { playSom, active } = this.state;
 		return (
 			<div className="app">
 				<Logo />
 				<Time active={this.state.active} seconds={this.state.seconds} />
 				<Button action={this.playStop}>{buttonString}</Button>
-				
+				{/* <Som /> */}
 				{/* <Option value={this.state.workTime} timer="workTime" updateLength={this.updateLength.bind(this)}>
 					Minutes of work
 				</Option>
