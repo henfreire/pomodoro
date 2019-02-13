@@ -16,7 +16,7 @@ const TipoItem = ({ tipo }) => {
 			dados = {
 				icon: faSmileBeam,
 				texto: 'Break',
-				cor: cor.work
+				cor: cor.break
 			};
 			break;
 		case 'cafe':
@@ -37,7 +37,7 @@ const TipoItem = ({ tipo }) => {
 			dados = {
 				icon: faUsers,
 				texto: 'Sprint',
-				cor: cor.work
+				cor: cor.sprint
 			};
 			break;
 		case 'breakFinal':

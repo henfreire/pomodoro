@@ -5,10 +5,7 @@ import Aplicacao from './app/';
 class App extends Component {
 	render() {
 		return (
-			<div className="App">
-				<header className="App-header" />
-				<Aplicacao />
-			</div>
+			<Aplicacao />
 		);
 	}
 }

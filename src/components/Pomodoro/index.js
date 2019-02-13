@@ -6,6 +6,7 @@ import Som from 'components/Som';
 import { setMensagem } from 'components/Notificacao';
 import moment from 'moment';
 import agenda from 'config/agenda';
+import Tipo from 'components/Tipo';
 const Logo = () => <img className="icon icons8-Tomato" src={logoWebBranca} />;
 
 class Pomodoro extends React.Component {
@@ -23,7 +24,8 @@ class Pomodoro extends React.Component {
 			timerId: false,
 			pomodoro: 1,
 			active: '',
-			agenda: agenda
+			agenda: agenda,
+			item: {}
 		};
 
 		this.playStop = this.playStop.bind(this);
@@ -78,9 +80,10 @@ class Pomodoro extends React.Component {
 	}
 
 	notificar = ({ tipo }) => {
+		const item = Tipo({tipo});
 		const fileSom = tipoSom({ tipo });
 		this.setState({ fileSom, playSom: true });
-		setTimeout(() => this.setState({ playSom: false }), 4000);
+		setTimeout(() => this.setState({ playSom: false, item }), 4000);
 		setMensagem({ tipo });
 	};
 	verificarAgenda = () => {
@@ -127,9 +130,9 @@ class Pomodoro extends React.Component {
 	handleSongFinishedPlaying = () => {};
 	render() {
 		const buttonString = this.state.timerId ? 'Pausar' : 'Iniciar';
-		const { playSom, somFile, active, seconds } = this.state;
+		const { playSom, somFile, active, seconds, item } = this.state;
 		return (
-			<div className="app">
+			<div className="app" style={{backgroundColor: item.cor}}>
 				<Logo />
 				<Time active={active} seconds={seconds} />
 				<Button action={this.playStop}>{buttonString}</Button>
