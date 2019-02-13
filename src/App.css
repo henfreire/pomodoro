@@ -1,6 +1,6 @@
 .App {
 	text-align: center;
-	background-color: #282c34;
+	background-color: #ff6e0d;
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
@@ -43,15 +43,26 @@
 }
 .btn:hover {
 	background-color: #f6f5f6;
-	color: #f36055;
+	color: #ff6e0d;
+}
+.timer {
+	margin-top: 50px;
 }
 .timer__description {
-	font-size: 1.75rem;
+	font-size: 3.5rem;
+	font-weight: 420;
+	margin: 0;
+	margin-bottom: 35px;
 }
 .timer__time {
-	font-size: 1.5rem;
+	font-size: 6.5rem;
+	font-weight: 420;
+	margin-top: 35px;
+	margin-bottom: 35px;
 }
-
+.timer-icone {
+	margin-top: 10px;
+}
 .input-group {
 	display: flex;
 	justify-content: center;

@@ -1,11 +1,11 @@
 import React from 'react';
 import { logoWebBranca } from 'components/Logo';
 import Time from 'components/Time';
-import { playSom } from 'components/Som/Audio';
+import { tipoSom } from 'components/Som/Audio';
 import Som from 'components/Som';
+import { setMensagem } from 'components/Notificacao';
 import moment from 'moment';
-window.moment = moment;
-
+import agenda from 'config/agenda';
 const Logo = () => <img className="icon icons8-Tomato" src={logoWebBranca} />;
 
 class Pomodoro extends React.Component {
@@ -16,30 +16,21 @@ class Pomodoro extends React.Component {
 			break: 600,
 			workTime: 3000,
 			cafe: 1200,
+			somFile: '',
+			playSom: false,
 			almoco: 3600,
 			seconds: 3000,
 			timerId: false,
 			pomodoro: 1,
-			active: 'workTime',
-			playSom: false,
-			agenda: [
-				{ start: '08:00', end: '08:50', tipo: 'workTime' },
-				{ start: '08:50', end: '09:10', tipo: 'cafe' },
-				{ start: '09:10', end: '10:00', tipo: 'workTime' },
-				{ start: '10:00', end: '10:10', tipo: 'break' },
-				{ start: '10:10', end: '11:00', tipo: 'workTime' },
-				{ start: '11:00', end: '11:10', tipo: 'break' },
-				{ start: '11:10', end: '11:59', tipo: 'workTime' },
-				{ start: '12:00', end: '13:00', tipo: 'almoco' },
-				{ start: '18:00', end: '19:00', tipo: 'cafe' },
-				{ start: '23:13', end: '23:30', tipo: 'cafe' }
-			]
+			active: '',
+			agenda: agenda
 		};
 
 		this.playStop = this.playStop.bind(this);
 		this.updateTime = this.updateTime.bind(this);
 	}
 	UNSAFE_componentWillMount() {
+		Notification.requestPermission();
 		this.iniciar();
 	}
 
@@ -74,7 +65,7 @@ class Pomodoro extends React.Component {
 				time = currentState.seconds - 1;
 			}
 			if (currentState.active != res.tipo) {
-				playSom({ tipo: res.tipo });
+				this.notificar({ tipo: res.tipo });
 			}
 			currentState.seconds = time;
 			currentState.active = nextTimer;
@@ -86,6 +77,12 @@ class Pomodoro extends React.Component {
 		});
 	}
 
+	notificar = ({ tipo }) => {
+		const fileSom = tipoSom({ tipo });
+		this.setState({ fileSom, playSom: true });
+		setTimeout(() => this.setState({ playSom: false }), 4000);
+		setMensagem({ tipo });
+	};
 	verificarAgenda = () => {
 		const { agenda } = this.state;
 		let item = {};
@@ -125,53 +122,22 @@ class Pomodoro extends React.Component {
 		this.setState(state);
 	}
 
+	handleSongLoading = () => {};
+	handleSongPlaying = () => {};
+	handleSongFinishedPlaying = () => {};
 	render() {
-		const buttonString = this.state.timerId ? 'Pausar' : 'Começar';
-		const { playSom, active } = this.state;
+		const buttonString = this.state.timerId ? 'Pausar' : 'Iniciar';
+		const { playSom, somFile, active, seconds } = this.state;
 		return (
 			<div className="app">
 				<Logo />
-				<Time active={this.state.active} seconds={this.state.seconds} />
+				<Time active={active} seconds={seconds} />
 				<Button action={this.playStop}>{buttonString}</Button>
-				{/* <Som /> */}
-				{/* <Option value={this.state.workTime} timer="workTime" updateLength={this.updateLength.bind(this)}>
-					Minutes of work
-				</Option>
-				<Option value={this.state.breakTime} timer="breakTime" updateLength={this.updateLength.bind(this)}>
-					Minutes of break
-				</Option> */}
+				{playSom && <Som file={somFile} tipo={active} />}
 			</div>
 		);
 	}
 }
-
-// class Option extends React.Component {
-// 	onChange(e) {
-// 		e.preventDefault();
-// 		this.props.updateLength(this.props.timer, e);
-// 	}
-
-// 	convertToMinutes(seconds) {
-// 		return Math.floor(seconds / 60);
-// 	}
-
-// 	render() {
-// 		return (
-// 			<label className="input-group">
-// 				{this.props.children}
-// 				<input
-// 					className="input-group__input"
-// 					type="number"
-// 					min="1"
-// 					step="1"
-// 					placeholder="Insert minutes"
-// 					onChange={this.onChange.bind(this)}
-// 					value={this.convertToMinutes(this.props.value)}
-// 				/>
-// 			</label>
-// 		);
-// 	}
-// }
 
 const Button = (props) => (
 	<button className="btn" onClick={props.action}>

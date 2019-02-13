@@ -1,0 +1,21 @@
+export default [
+	{ start: '08:00', end: '08:50', tipo: 'workTime' },
+	{ start: '08:50', end: '09:10', tipo: 'cafe' },
+	{ start: '09:10', end: '10:00', tipo: 'workTime' },
+	{ start: '10:00', end: '10:10', tipo: 'break' },
+	{ start: '10:10', end: '11:00', tipo: 'workTime' },
+	{ start: '11:00', end: '11:10', tipo: 'break' },
+	{ start: '11:10', end: '11:59', tipo: 'workTime' },
+	{ start: '12:00', end: '13:00', tipo: 'almoco' },
+	{ start: '13:01', end: '13:20', tipo: 'sprint' },
+	{ start: '13:20', end: '14:09', tipo: 'workTime' },
+	{ start: '14:10', end: '14:20', tipo: 'break' },
+	{ start: '14:20', end: '15:09', tipo: 'workTime' },
+	{ start: '15:10', end: '15:20', tipo: 'break' },
+	{ start: '15:20', end: '16:10', tipo: 'workTime' },
+	{ start: '16:10', end: '16:30', tipo: 'cafe' },
+	{ start: '16:30', end: '17:20', tipo: 'workTime' },
+	{ start: '17:20', end: '17:30', tipo: 'break' },
+	{ start: '17:30', end: '18:00', tipo: 'workTime' },
+	{ start: '18:00', end: '18:10', tipo: 'breakFinal' }
+];

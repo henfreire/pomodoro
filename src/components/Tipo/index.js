@@ -1,4 +1,5 @@
-import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faCoffee, faLaptopCode, faFutbol, faUtensils, faUsers, faHourglassEnd, faSmileBeam, faSadCry } from '@fortawesome/free-solid-svg-icons';
+
 import cor from 'components/Cores';
 const TipoItem = ({ tipo }) => {
 	const opcao = tipo;
@@ -6,29 +7,50 @@ const TipoItem = ({ tipo }) => {
 	switch (opcao) {
 		case 'workTime':
 			dados = {
-				icon: faUser,
+				icon: faLaptopCode,
 				texto: 'Pomodoro',
 				cor: cor.work
 			};
 			break;
 		case 'break':
 			dados = {
-				icon: faUser,
+				icon: faSmileBeam,
 				texto: 'Break',
 				cor: cor.work
 			};
 			break;
 		case 'cafe':
 			dados = {
-				icon: faUser,
+				icon: faCoffee,
 				texto: 'Café',
 				cor: cor.work
 			};
 			break;
 		case 'almoco':
 			dados = {
-				icon: faUser,
-				texto: 'Café',
+				icon: faUtensils,
+				texto: 'Almoço',
+				cor: cor.work
+			};
+			break;
+		case 'sprint':
+			dados = {
+				icon: faUsers,
+				texto: 'Sprint',
+				cor: cor.work
+			};
+			break;
+		case 'breakFinal':
+			dados = {
+				icon: faHourglassEnd,
+				texto: 'Fim do expediente!!!',
+				cor: cor.work
+			};
+			break;
+		case 'fimBreak':
+			dados = {
+				icon: faSadCry,
+				texto: 'Acabou o Break!!!',
 				cor: cor.work
 			};
 			break;

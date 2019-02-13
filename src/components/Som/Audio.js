@@ -1,7 +1,7 @@
 import somBreak from 'sons/super-mario-2335.mp3';
 import somFimBreak from 'sons/spongebob-end.mp3';
-let audio = new Audio();
-export const playSom = ({ tipo }) => {
+import somDefault from 'sons/calm-1ost-minecraft.mp3';
+export const tipoSom = ({ tipo }) => {
 	let som;
 	if (tipo) {
 		switch (tipo) {
@@ -11,33 +11,10 @@ export const playSom = ({ tipo }) => {
 			case 'fimBreak':
 				som = somFimBreak;
 			default:
-				som = somBreak;
+				som = somDefault;
 				break;
 		}
-		try {
-			audio.src = som;
-			audio.autoplay = true;
-			audio.load();
-			setTimeout(pausar, 3000);
-			//window.audio = audio;
 
-			// audio.addEventListener('oncanplay', () => {
-			// 	let duration = audio.duration;
-			// 	console.log("duration", duration)
-			//   })
-			// audio.oncanplay = () => {
-			// 	audio.play();
-			// 	setTimeout(pausar, 3000);
-			// };
-		} catch (err) {
-			console.log('err', err);
-		}
+		return som;
 	}
-};
-
-export const play = () => {
-	audio.play();
-};
-export const pausar = () => {
-	audio.pause();
 };

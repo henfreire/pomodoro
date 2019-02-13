@@ -1,5 +1,7 @@
 import React from 'react';
 import Tipo from 'components/Tipo';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 class Time extends React.Component {
 	twoDigits(num) {
 		return num > 9 ? '' + num : '0' + num;
@@ -13,10 +15,16 @@ class Time extends React.Component {
 	}
 
 	render() {
-        var remainingTime = this.convertToHhMmSs(this.props.seconds);
-        const item = Tipo({tipo: this.props.active});
+		var remainingTime = this.convertToHhMmSs(this.props.seconds);
+		const item = Tipo({ tipo: this.props.active });
+		document.title = item.texto + ' - ' + remainingTime;
+		
 		return (
 			<div className="timer">
+				
+				<div className="timer-icone">
+					<FontAwesomeIcon icon={item.icon} size="2x" />
+				</div>
 				<p className="timer__description">{item.texto}</p>
 				<p className="timer__time">{remainingTime}</p>
 			</div>

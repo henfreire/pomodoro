@@ -1,5 +1,6 @@
 {
   "name": "pomodoro",
+  "homepage": ".",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -12,7 +13,9 @@
     "moment": "^2.24.0",
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
-    "react-scripts": "2.1.3"
+    "react-scripts": "2.1.3",
+    "react-sound": "^1.2.0",
+    "react-title-component": "^1.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
