@@ -12,6 +12,8 @@ export const tipoSom = ({ tipo }) => {
 				som = somFimBreak;
 			case 'almocao':
 				som = somBreak;
+			case 'cafe':
+				som = somBreak;
 			default:
 				som = somDefault;
 				break;

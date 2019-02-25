@@ -23,14 +23,14 @@ const TipoItem = ({ tipo }) => {
 			dados = {
 				icon: faCoffee,
 				texto: 'Café',
-				cor: cor.work
+				cor: cor.cafe
 			};
 			break;
 		case 'almoco':
 			dados = {
 				icon: faUtensils,
 				texto: 'Almoço',
-				cor: cor.work
+				cor: cor.almoco
 			};
 			break;
 		case 'sprint':
