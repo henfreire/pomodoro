@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
-import Pomodoro from '../components/Pomodoro/';
-class Aplicacao extends Component {
+import { Route, Switch } from 'react-router-dom';
+
+import Pomodoro from './routes/Pomodoro';
+import 'styles/App.css';
+class App extends Component {
 	render() {
 		return (
-			<Pomodoro />
+			<Switch>
+				<Route path="/" component={Pomodoro} />
+			</Switch>
 		);
 	}
 }
 
-export default Aplicacao;
+export default App;

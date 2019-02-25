@@ -1,6 +1,6 @@
 
 export default {
-	work: '#fc7242',
+	work: '#ff6e0d',
 	break: '#00c689',
 	sprint: '#242425'
 };

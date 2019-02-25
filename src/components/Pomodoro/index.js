@@ -1,4 +1,8 @@
 import React from 'react';
+
+import { connect } from 'react-redux';
+import { Creators as ActionsAgenda } from 'ducks/Agenda';
+
 import { logoWebBranca } from 'components/Logo';
 import Time from 'components/Time';
 import { tipoSom } from 'components/Som/Audio';
@@ -67,7 +71,9 @@ class Pomodoro extends React.Component {
 				time = currentState.seconds - 1;
 			}
 			if (currentState.active != res.tipo) {
-				this.notificar({ tipo: res.tipo });
+				const item = Tipo({ tipo: res.tipo });
+				this.props.setItem({ ...item, ...res });
+				this.notificar({ tipo: res.tipo, item });
 			}
 			currentState.seconds = time;
 			currentState.active = nextTimer;
@@ -79,15 +85,16 @@ class Pomodoro extends React.Component {
 		});
 	}
 
-	notificar = ({ tipo }) => {
-		const item = Tipo({tipo});
+	notificar = ({ tipo, item }) => {
 		const fileSom = tipoSom({ tipo });
 		this.setState({ fileSom, playSom: true });
-		setTimeout(() => this.setState({ playSom: false, item }), 4000);
-		setMensagem({ tipo });
+		setTimeout(() => {
+			this.setState({ playSom: false });
+		}, 4000);
+		//setMensagem({ tipo });
 	};
 	verificarAgenda = () => {
-		const { agenda } = this.state;
+		const { agenda } = this.props;
 		let item = {};
 		let timeAtual = new Date(new Date().getTime()).toLocaleTimeString('pt-BR');
 		let resposta = { status: false };
@@ -130,11 +137,12 @@ class Pomodoro extends React.Component {
 	handleSongFinishedPlaying = () => {};
 	render() {
 		const buttonString = this.state.timerId ? 'Pausar' : 'Iniciar';
-		const { playSom, somFile, active, seconds, item } = this.state;
+		const { playSom, somFile, active, seconds } = this.state;
+		const {item} = this.props;
 		return (
-			<div className="app" style={{backgroundColor: item.cor}}>
+			<div>
 				<Logo />
-				<Time active={active} seconds={seconds} />
+				<Time active={active} seconds={seconds} item={item}/>
 				<Button action={this.playStop}>{buttonString}</Button>
 				{playSom && <Som file={somFile} tipo={active} />}
 			</div>
@@ -148,4 +156,12 @@ const Button = (props) => (
 	</button>
 );
 
-export default Pomodoro;
+const { setItem } = ActionsAgenda;
+const mapStateTopProps = ({ agenda }) => {
+	const { lista, item } = agenda;
+	return {
+		lista,
+		item
+	};
+};
+export default connect(mapStateTopProps, { setItem })(Pomodoro);

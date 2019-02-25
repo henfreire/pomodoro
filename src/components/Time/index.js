@@ -16,7 +16,7 @@ class Time extends React.Component {
 
 	render() {
 		var remainingTime = this.convertToHhMmSs(this.props.seconds);
-		const item = Tipo({ tipo: this.props.active });
+		const {item}  = this.props;
 		document.title = item.texto + ' - ' + remainingTime;
 		
 		return (
