@@ -26,7 +26,7 @@ class PomodoroTela extends Component {
 		const { open } = this.state;
 		return (
 			<div className="app" style={{ backgroundColor: item.cor }}>
-				<Pomodoro agenda={lista[selecionado.index].horarios}/>
+				<Pomodoro agenda={lista.length > 0 ? lista[selecionado.index].horarios : []} />
 				<Button style={{ color: '#fff' }} onClick={this.handleClickButton}>
 					Editar
 				</Button>

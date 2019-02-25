@@ -70,9 +70,12 @@ class Pomodoro extends React.Component {
 				nextTimer = 'workTime';
 				time = currentState.seconds - 1;
 			}
+			const item = Tipo({ tipo: res.tipo });
+			console.log("item",item,res)
+			this.props.setItem({ ...item, ...res });
+
 			if (currentState.active != res.tipo) {
 				const item = Tipo({ tipo: res.tipo });
-				this.props.setItem({ ...item, ...res });
 				this.notificar({ tipo: res.tipo, item });
 			}
 			currentState.seconds = time;
@@ -97,9 +100,10 @@ class Pomodoro extends React.Component {
 		const { agenda } = this.props;
 		let item = {};
 		let timeAtual = new Date(new Date().getTime()).toLocaleTimeString('pt-BR');
-		let resposta = { status: false };
+		let resposta = {};
 		for (let i = 0; i < agenda.length; i++) {
 			item = agenda[i];
+			resposta = { ...item, status: false };
 			if (timeAtual >= item.start && timeAtual <= item.end) {
 				resposta = { ...item, status: true };
 				break;
@@ -138,11 +142,11 @@ class Pomodoro extends React.Component {
 	render() {
 		const buttonString = this.state.timerId ? 'Pausar' : 'Iniciar';
 		const { playSom, somFile, active, seconds } = this.state;
-		const {item} = this.props;
+		const { item } = this.props;
 		return (
 			<div>
 				<Logo />
-				<Time active={active} seconds={seconds} item={item}/>
+				<Time active={active} seconds={seconds} item={item} />
 				<Button action={this.playStop}>{buttonString}</Button>
 				{playSom && <Som file={somFile} tipo={active} />}
 			</div>

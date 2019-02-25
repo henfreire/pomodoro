@@ -10,6 +10,8 @@ export const tipoSom = ({ tipo }) => {
 				break;
 			case 'fimBreak':
 				som = somFimBreak;
+			case 'almocao':
+				som = somBreak;
 			default:
 				som = somDefault;
 				break;
