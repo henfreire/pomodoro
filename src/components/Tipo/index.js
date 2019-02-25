@@ -5,7 +5,7 @@ const TipoItem = ({ tipo }) => {
 	const opcao = tipo;
 	let dados = {};
 	switch (opcao) {
-		case 'workTime':
+		case 'worktime':
 			dados = {
 				icon: faLaptopCode,
 				texto: 'Pomodoro',

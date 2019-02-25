@@ -19,7 +19,7 @@ class Pomodoro extends React.Component {
 
 		this.state = {
 			break: 600,
-			workTime: 3000,
+			worktime: 3000,
 			cafe: 1200,
 			somFile: '',
 			playSom: false,
@@ -60,18 +60,17 @@ class Pomodoro extends React.Component {
 		this.setState(function(prevState, props) {
 			const currentState = Object.assign(prevState);
 			const stillActive = prevState.seconds - 1 > 0;
-			let nextTimer = 'workTime';
+			let nextTimer = 'worktime';
 			let time = currentState.seconds;
 			let res = this.verificarAgenda();
 			if (res.status) {
 				nextTimer = res.tipo;
 				time = this.checkStartTime(res);
 			} else {
-				nextTimer = 'workTime';
+				nextTimer = 'worktime';
 				time = currentState.seconds - 1;
 			}
 			const item = Tipo({ tipo: res.tipo });
-			console.log("item",item,res)
 			this.props.setItem({ ...item, ...res });
 
 			if (currentState.active != res.tipo) {
@@ -132,7 +131,7 @@ class Pomodoro extends React.Component {
 
 		const state = Object.assign({}, this.state);
 		state[timer] = e.target.value * 60;
-		state.seconds = timer === 'workTime' ? e.target.value * 60 : state.seconds;
+		state.seconds = timer === 'worktime' ? e.target.value * 60 : state.seconds;
 		this.setState(state);
 	}
 
